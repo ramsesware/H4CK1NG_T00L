@@ -1,37 +1,37 @@
 # H4CK1NG_T00L v2.0
 
-## Descripción
+## Description
 
-**H4CK1NG_T00L** es una suite de herramientas de **penetración y análisis de seguridad** diseñada para ofrecer una solución completa y escalable. Esta herramienta está orientada tanto a usuarios principiantes como avanzados en el campo de la ciberseguridad, con un enfoque en una **interfaz gráfica intuitiva** que facilita la ejecución de tareas comunes de pruebas de penetración.
+**H4CK1NG_T00L** is a comprehensive **penetration testing and security analysis** suite designed to offer a scalable and complete solution. This tool is aimed at both beginner and advanced users in the field of cybersecurity, with a focus on an **intuitive graphical interface** that makes common penetration testing tasks easier.
 
-En esta versión 2.0, se ha implementado una estructura modular que permite una mayor **escalabilidad y facilidad de mantenimiento**. Cada módulo se encuentra separado en scripts individuales, lo cual facilita la adición de nuevas funcionalidades en el futuro.
+In this version 2.0, a modular structure has been implemented to allow for greater **scalability and ease of maintenance**. Each module is separated into individual scripts, which facilitates the addition of new features in the future.
 
-## Estructura del Proyecto
+## Project Structure
 
-El proyecto se organiza de la siguiente manera:
+The project is organized as follows:
 
-- **main.py**: Archivo principal que inicia la interfaz gráfica y coordina las funcionalidades.
-- **/GUI**: Módulos que manejan los aspectos visuales de la herramienta.
-  - `dark_theme.py`: Implementa un tema oscuro para la GUI.
-  - `frames.py`: Define los frames y ventanas de la interfaz.
-- **/TOOLS**: Módulos que contienen las herramientas principales de análisis.
-  - `dir_scanner.py`: Realiza un análisis basado en diccionario para encontrar directorios web.
-  - `metadata_analyzer.py`: Extrae metadatos de documentos PDF y Word.
-- **/UTILS**: Módulos utilitarios para gestionar diversas funciones auxiliares.
-  - `file_handler.py`: Maneja operaciones de archivos necesarias.
-  - `http_requests.py`: Realiza peticiones HTTP/HTTPS para las funcionalidades de análisis.
+- **main.py**: The main file that starts the graphical interface and coordinates functionalities.
+- **/gui**: Modules that handle the visual aspects of the tool.
+  - `dark_theme.py`: Implements a dark theme for the GUI.
+  - `frames.py`: Defines frames and windows for the interface.
+- **/tools**: Modules containing the main analysis tools.
+  - `dir_scanner.py`: Performs a dictionary-based analysis to find web directories.
+  - `metadata_analyzer.py`: Extracts metadata from PDF and Word documents.
+- **/utils**: Utility modules to manage various auxiliary functions.
+  - `file_handler.py`: Manages necessary file operations.
+  - `http_requests.py`: Handles HTTP/HTTPS requests for analysis functionalities.
 
-## Funcionalidades
+## Features
 
-### 1. Análisis de Directorios Web
-- Realiza un análisis basado en diccionario para identificar directorios en una URL específica, verificando su disponibilidad a través de peticiones HTTP/HTTPS.
+### 1. Web Directory Analysis
+- Conducts a dictionary-based scan to identify directories in a specified URL, checking their availability through HTTP/HTTPS requests.
 
-### 2. Análisis de Metadatos
-- Extrae metadatos de documentos PDF y Word, revelando información potencialmente sensible como nombres de autores, fechas de modificación y detalles del software utilizado.
+### 2. Metadata Analysis
+- Extracts metadata from PDF and Word documents, revealing potentially sensitive information such as author names, modification dates, and software details.
 
-## Uso
+## Usage
 
-Para ejecutar la herramienta, simplemente ejecuta `main.py`. La interfaz gráfica te permitirá navegar por las diferentes funcionalidades, proporcionando una experiencia de usuario fluida y sencilla.
+To run the tool, simply execute `main.py`. The graphical interface will allow you to navigate through different functionalities, providing a smooth and user-friendly experience.
 
 ```bash
 python main.py
