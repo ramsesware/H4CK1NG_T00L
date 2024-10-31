@@ -61,4 +61,4 @@ def stop_analysis():
 def clear_results(result_text, progress_bar):
     result_text.delete("1.0", tk.END)
     progress_bar["value"] = 0
-    messagebox.showinfo("Results cleared", "Text are and progress bard have been cleared.")
+    messagebox.showinfo("Results cleared", "Text area and progress bar have been cleared.")

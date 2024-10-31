@@ -2,7 +2,7 @@ import os
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 from tools.dir_scanner import start_directory_analysis, stop_analysis, clear_results
-from tools.metadata_analyzer import analyze_metadata, analyze_metadata_directory
+from tools.metadata_analyzer import analyze_metadata, analyze_metadata_directory, remove_metadata_file, remove_metadata_directory, clear_results_metadata
 from utils.file_handler import select_file, select_directory
 from gui.dark_theme import apply_dark_theme
 
@@ -116,10 +116,20 @@ def create_metadata_analysis_frame(parent):
     metadata_label = ttk.Label(metadata_frame, text="Metadata:", font=("Consolas", 16), foreground="lime", background="#2d2d2d")
     metadata_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
 
-    select_btn = tk.Button(metadata_frame, text="Select File", command=lambda: show_metadata(analyze_metadata(select_file([("PDF Files", "*.pdf"), ("Word Files", "*.docx")])), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    select_btn = tk.Button(metadata_frame, text="Select File", command=lambda: show_metadata(analyze_metadata(select_file([("PDF Files", "*.pdf"), ("Word Files", "*.docx"), ("Image Files", "*.jpeg | *.jpg | *.png")])), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
     select_btn.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+
     select_directory_btn = tk.Button(metadata_frame, text="Select Directory", command=lambda: show_metadata_directory(analyze_metadata_directory(select_directory()), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
     select_directory_btn.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+
+    remove_metadata_file_btn = tk.Button(metadata_frame, text="Remove metadata (Single document)", command=lambda: show_remove_result(remove_metadata_file((select_file([("PDF Files", "*.pdf"), ("Word Files", "*.docx"), ("Image Files", "*.jpeg | *.jpg | *.png")]))), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    remove_metadata_file_btn.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+
+    remove_metadata_directory_btn = tk.Button(metadata_frame, text="Remove metadata (Directory)", command=lambda: show_remove_directory_result(remove_metadata_directory(select_directory()), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    remove_metadata_directory_btn.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+
+    clean_btn = tk.Button(metadata_frame, text="Clean", command=lambda: clear_results_metadata(result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    clean_btn.grid(row=4, column=0, padx=5, pady=5, sticky="w")
 
     return metadata_frame
 
@@ -130,6 +140,21 @@ def show_metadata(data, result_text_metadata):
             result_text_metadata.insert(tk.END, f"{key}: {value}\n")
     else:
         messagebox.showwarning("Warning", "Didn't find metadata or not selected a correct file.")
+
+def show_remove_result(data, result_text_metadata):
+    if data:
+        result_text_metadata.delete("1.0", tk.END)
+        result_text_metadata.insert(tk.END, f"{data}\n")  
+    else:
+        messagebox.showwarning("Warning", "Didn't remove metadata or not selected a correct file.")
+
+def show_remove_directory_result(data, result_text_metadata):
+    if data:
+        result_text_metadata.delete("1.0", tk.END)
+        for message in data:
+            result_text_metadata.insert(tk.END, f"{message}\n")  
+    else:
+        messagebox.showwarning("Warning", "Didn't remove metadata or not selected a correct file.")
 
 def show_metadata_directory(data, result_text_metadata):
     if data:
