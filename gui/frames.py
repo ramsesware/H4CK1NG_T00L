@@ -6,124 +6,122 @@ from tools.metadata_analyzer import analyze_metadata
 from utils.file_handler import select_file
 from gui.dark_theme import apply_dark_theme
 
-# Diccionario para almacenar los frames de las herramientas
-herramientas_frames = {}
+frames_tools = {}
 
 def create_main_window(root):
-    root.title("Herramientas de Ciberseguridad - Modo Oscuro")
+    root.title("Cibersecurity tools")
     root.geometry("1200x900")
     root.configure(bg="#2d2d2d")
 
-    # Aplicar tema oscuro
+    # Apply dark theme
     style = ttk.Style()
     apply_dark_theme(style)
 
-    # Crear contenedor principal
-    contenedor = ttk.Frame(root, padding="10")
-    contenedor.pack(fill="both", expand=True)
+    # Create principal container
+    container = ttk.Frame(root, padding="10")
+    container.pack(fill="both", expand=True)
 
-    # Crear menú de herramientas
+    # Create tools menu
     menu = tk.Menu(root, bg="#2d2d2d", fg="lime", activebackground="gray", activeforeground="black", font=("Consolas", 16))
     root.config(menu=menu)
 
-    # Menú de Herramientas
-    herramientas_menu = tk.Menu(menu, font=("Consolas", 16), tearoff=0, bg="#2d2d2d", fg="lime")
-    menu.add_cascade(label="Herramientas", menu=herramientas_menu)
+    # Tools menu
+    tools_menu = tk.Menu(menu, font=("Consolas", 16), tearoff=0, bg="#2d2d2d", fg="lime")
+    menu.add_cascade(label="Tools", menu=tools_menu)
 
-    # Crear frames para cada herramienta y añadirlos al diccionario
-    herramientas_frames["analisis_directorios"] = create_directory_analysis_frame(contenedor)
-    herramientas_frames["analisis_metadatos"] = create_metadata_analysis_frame(contenedor)
+    # Create frames for each tool
+    frames_tools["directory_analyzer"] = create_directory_analysis_frame(container)
+    frames_tools["metadata_analyzer"] = create_metadata_analysis_frame(container)
 
-    # Añadir opciones al menú
-    herramientas_menu.add_command(label="Análisis de Directorios Web", command=lambda: cambiar_herramienta("analisis_directorios"))
-    herramientas_menu.add_command(label="Análisis de Metadatos", command=lambda: cambiar_herramienta("analisis_metadatos"))
+    # Add options to menu
+    tools_menu.add_command(label="Web Directory Analyzer", command=lambda: tool_swap("directory_analyzer"))
+    tools_menu.add_command(label="Metadata Analyzer", command=lambda: tool_swap("metadata_analyzer"))
 
-    # Mostrar inicialmente el frame de análisis de directorios
-    cambiar_herramienta("analisis_directorios")
+    # Show initially Web Directory Analyzer
+    tool_swap("directory_analyzer")
 
-def cambiar_herramienta(herramienta):
-    """Oculta todos los frames y muestra solo el frame seleccionado."""
-    for frame in herramientas_frames.values():
-        frame.pack_forget()  # Ocultar todos los frames
+def tool_swap(tool):
+    for frame in frames_tools.values():
+        frame.pack_forget()  # Hide all frames
 
-    # Mostrar el frame correspondiente a la herramienta seleccionada
-    herramientas_frames[herramienta].pack(fill="both", expand=True)
+    # Show frame of selected tool
+        frames_tools[tool].pack(fill="both", expand=True)
 
 def create_directory_analysis_frame(parent):
-    frame_directorios = ttk.Frame(parent)
+    directories_frame = ttk.Frame(parent)
     
-    # Campo para ingresar la URL
-    ttk.Label(frame_directorios, text="URL:", font=("Consolas", 16), foreground="lime", background="#2d2d2d").grid(row=0, column=0, padx=5, pady=5)
-    url_entry = ttk.Entry(frame_directorios, width=50, font=("Consolas", 16))
+    # Field to insert URL
+    ttk.Label(directories_frame, text="URL:", font=("Consolas", 16), foreground="lime", background="#2d2d2d").grid(row=0, column=0, padx=5, pady=5)
+    url_entry = ttk.Entry(directories_frame, width=50, font=("Consolas", 16))
     url_entry.grid(row=0, column=1, padx=5, pady=5)
 
-    diccionario_seleccionado = []
+    selected_dictionary = []
 
     # Botón para seleccionar diccionario
-    def seleccionar_diccionario():
-        nonlocal diccionario_seleccionado
+    def select_dictionary():
+        nonlocal selected_dictionary
         filepath = select_file([("Text Files", "*.txt")])
         if filepath:
             with open(filepath, "r") as f:
-                diccionario_seleccionado = f.read().splitlines()
-            diccionario_label.config(text=f"Diccionario seleccionado: {os.path.basename(filepath)}")
+                selected_dictionary = f.read().splitlines()
+            dictionary_label.config(text=f"Selected dictionary: {os.path.basename(filepath)}")
         else:
-            messagebox.showwarning("Advertencia", "No se seleccionó ningún diccionario")
+            messagebox.showwarning("Warning", "Dictionary not selected")
 
 
     # Área de texto para mostrar resultados
-    frame_resultado = ttk.Frame(frame_directorios)
-    frame_resultado.grid(row=5, columnspan=2, padx=5, pady=5)
-    resultado_texto = tk.Text(frame_resultado, height=20, width=80, font=("Consolas", 16), bg="#3c3f41", fg="lime", insertbackground="white")
-    resultado_texto.tag_configure("green_text", foreground="lime")
-    scrollbar = ttk.Scrollbar(frame_resultado, orient="vertical", command=resultado_texto.yview)
-    resultado_texto.configure(yscrollcommand=scrollbar.set)
-    resultado_texto.pack(side="left", fill="both", expand=True)
+    result_frame = ttk.Frame(directories_frame)
+    result_frame.grid(row=5, columnspan=2, padx=5, pady=5)
+    result_text = tk.Text(result_frame, height=20, width=80, font=("Consolas", 16), bg="#3c3f41", fg="lime", insertbackground="white")
+    result_text.tag_configure("green_text", foreground="lime")
+    scrollbar = ttk.Scrollbar(result_frame, orient="vertical", command=result_text.yview)
+    result_text.configure(yscrollcommand=scrollbar.set)
+    result_text.pack(side="left", fill="both", expand=True)
     scrollbar.pack(side="right", fill="y")
 
-    diccionario_btn = tk.Button(frame_directorios, text="Seleccionar Diccionario", command=seleccionar_diccionario, font=("Consolas", 16), bg="#3c3f41", fg="lime")
-    diccionario_btn.grid(row=1, column=0, padx=5, pady=5)
+    dictionary_btn = tk.Button(directories_frame, text="Select Dictionary", command=select_dictionary, font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    dictionary_btn.grid(row=1, column=0, padx=5, pady=5)
 
-    diccionario_label = ttk.Label(frame_directorios, text="Diccionario no seleccionado", font=("Consolas", 16), foreground="lime", background="#2d2d2d")
-    diccionario_label.grid(row=1, column=1, padx=5, pady=5)
+    dictionary_label = ttk.Label(directories_frame, text="Dictionary not selected", font=("Consolas", 16), foreground="lime", background="#2d2d2d")
+    dictionary_label.grid(row=1, column=1, padx=5, pady=5)
 
     # Botones para análisis
-    analizar_btn = tk.Button(frame_directorios, text="Analizar", command=lambda: start_directory_analysis(url_entry.get(), diccionario_seleccionado, progreso, resultado_texto, parent), font=("Consolas", 16), bg="#3c3f41", fg="lime")
-    analizar_btn.grid(row=2, column=0, padx=5, pady=5)
+    analyze_btn = tk.Button(directories_frame, text="Analyze", command=lambda: start_directory_analysis(url_entry.get(), selected_dictionary, progress, result_text, parent), font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    analyze_btn.grid(row=2, column=0, padx=5, pady=5)
 
-    detener_btn = tk.Button(frame_directorios, text="Detener", command=stop_analysis, font=("Consolas", 16), bg="#3c3f41", fg="lime")
-    detener_btn.grid(row=3, column=0, padx=5, pady=5)
+    stop_btn = tk.Button(directories_frame, text="Stop", command=stop_analysis, font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    stop_btn.grid(row=3, column=0, padx=5, pady=5)
 
-    progreso = ttk.Progressbar(frame_directorios, orient="horizontal", length=500, mode="determinate", style="Custom.Horizontal.TProgressbar")
-    progreso.grid(row=4, columnspan=2, padx=5, pady=5)
+    progress = ttk.Progressbar(directories_frame, orient="horizontal", length=500, mode="determinate", style="Custom.Horizontal.TProgressbar")
+    progress.grid(row=4, columnspan=2, padx=5, pady=5)
 
-    limpiar_btn = tk.Button(frame_directorios, text="Limpiar", command=lambda: clear_results(resultado_texto, progreso), font=("Consolas", 16), bg="#3c3f41", fg="lime")
-    limpiar_btn.grid(row=3, column=1, padx=5, pady=5)
+    clean_btn = tk.Button(directories_frame, text="Clean", command=lambda: clear_results(result_text, progress), font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    clean_btn.grid(row=3, column=1, padx=5, pady=5)
 
-    return frame_directorios
+    return directories_frame
 
 def create_metadata_analysis_frame(parent):
-    frame_metadatos = ttk.Frame(parent)
+    metadata_frame = ttk.Frame(parent)
 
-    # Crear área de texto para mostrar resultados de metadatos
-    frame_resultado_metadatos = ttk.Frame(frame_metadatos)
-    frame_resultado_metadatos.grid(row=1, columnspan=2, padx=5, pady=5)
-    resultado_texto_metadatos = tk.Text(frame_resultado_metadatos, height=20, width=80, font=("Consolas", 16), bg="#3c3f41", fg="lime", insertbackground="white")
-    resultado_texto_metadatos.tag_configure("green_text", foreground="lime")
-    scrollbar_metadatos = ttk.Scrollbar(frame_resultado_metadatos, orient="vertical", command=resultado_texto_metadatos.yview)
-    resultado_texto_metadatos.configure(yscrollcommand=scrollbar_metadatos.set)
-    resultado_texto_metadatos.pack(side="left", fill="both", expand=True)
-    scrollbar_metadatos.pack(side="right", fill="y")
+    # Create text area to show results of metadata
+    result_metadata_frame = ttk.Frame(metadata_frame)
+    result_metadata_frame.grid(row=1, columnspan=2, padx=5, pady=5)
+    result_text_metadata = tk.Text(result_metadata_frame, height=20, width=80, font=("Consolas", 16), bg="#3c3f41", fg="lime", insertbackground="white")
+    result_text_metadata.tag_configure("green_text", foreground="lime")
+    scrollbar_metadata = ttk.Scrollbar(result_metadata_frame, orient="vertical", command=result_text_metadata.yview)
+    result_text_metadata.configure(yscrollcommand=scrollbar_metadata.set)
+    result_text_metadata.pack(side="left", fill="both", expand=True)
+    scrollbar_metadata.pack(side="right", fill="y")
 
-    seleccionar_btn = tk.Button(frame_metadatos, text="Seleccionar Archivo", command=lambda: mostrar_metadatos(analyze_metadata(select_file([("Archivos PDF", "*.pdf"), ("Archivos Word", "*.docx")])), resultado_texto_metadatos), font=("Consolas", 16), bg="#3c3f41", fg="lime")
-    seleccionar_btn.grid(row=0, column=0, padx=5, pady=5)
+    select_btn = tk.Button(metadata_frame, text="Select File", command=lambda: show_metadata(analyze_metadata(select_file([("PDF Files", "*.pdf"), ("Word Files", "*.docx")])), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    select_btn.grid(row=0, column=0, padx=5, pady=5)
 
-    return frame_metadatos
+    return metadata_frame
 
-def mostrar_metadatos(datos, resultado_texto_metadatos):
-    if datos:
-        resultado_texto_metadatos.delete("1.0", tk.END)
-        for key, value in datos.items():
-            resultado_texto_metadatos.insert(tk.END, f"{key}: {value}\n")
+def show_metadata(data, result_text_metadata):
+    if data:
+        result_text_metadata.delete("1.0", tk.END)
+        for key, value in data.items():
+            result_text_metadata.insert(tk.END, f"{key}: {value}\n")
     else:
-        messagebox.showwarning("Advertencia", "No se encontraron metadatos o no se seleccionó un archivo válido.")
+        messagebox.showwarning("Warning", "Didn't find metadata or not selected a correct file.")

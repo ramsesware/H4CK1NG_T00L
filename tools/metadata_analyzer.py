@@ -13,13 +13,13 @@ def analyze_metadata(filepath):
             doc = Document(filepath)
             props = doc.core_properties
             return {
-                "Título": props.title,
-                "Autor": props.author,
-                "Último autor": props.last_modified_by,
-                "Fecha de creación": props.created,
-                "Última modificación": props.modified,
-                "Categoría": props.category,
-                "Comentarios": props.comments
+                "Title": props.title,
+                "Author": props.author,
+                "Last author": props.last_modified_by,
+                "Creation date": props.created,
+                "Last modify": props.modified,
+                "Category": props.category,
+                "Comments": props.comments
             }
     except Exception as e:
-        messagebox.showerror("Error", f"Error al analizar el archivo: {e}")
+        messagebox.showerror("Error", f"Error on file analyzing: {e}")
