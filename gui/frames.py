@@ -2,8 +2,8 @@ import os
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 from tools.dir_scanner import start_directory_analysis, stop_analysis, clear_results
-from tools.metadata_analyzer import analyze_metadata
-from utils.file_handler import select_file
+from tools.metadata_analyzer import analyze_metadata, analyze_metadata_directory
+from utils.file_handler import select_file, select_directory
 from gui.dark_theme import apply_dark_theme
 
 frames_tools = {}
@@ -105,7 +105,7 @@ def create_metadata_analysis_frame(parent):
 
     # Create text area to show results of metadata
     result_metadata_frame = ttk.Frame(metadata_frame)
-    result_metadata_frame.grid(row=1, columnspan=2, padx=5, pady=5)
+    result_metadata_frame.grid(row=3, columnspan=2, padx=5, pady=5)
     result_text_metadata = tk.Text(result_metadata_frame, height=20, width=80, font=("Consolas", 16), bg="#3c3f41", fg="lime", insertbackground="white")
     result_text_metadata.tag_configure("green_text", foreground="lime")
     scrollbar_metadata = ttk.Scrollbar(result_metadata_frame, orient="vertical", command=result_text_metadata.yview)
@@ -113,8 +113,13 @@ def create_metadata_analysis_frame(parent):
     result_text_metadata.pack(side="left", fill="both", expand=True)
     scrollbar_metadata.pack(side="right", fill="y")
 
+    metadata_label = ttk.Label(metadata_frame, text="Metadata:", font=("Consolas", 16), foreground="lime", background="#2d2d2d")
+    metadata_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+
     select_btn = tk.Button(metadata_frame, text="Select File", command=lambda: show_metadata(analyze_metadata(select_file([("PDF Files", "*.pdf"), ("Word Files", "*.docx")])), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
-    select_btn.grid(row=0, column=0, padx=5, pady=5)
+    select_btn.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+    select_directory_btn = tk.Button(metadata_frame, text="Select Directory", command=lambda: show_metadata_directory(analyze_metadata_directory(select_directory()), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    select_directory_btn.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
     return metadata_frame
 
@@ -125,3 +130,27 @@ def show_metadata(data, result_text_metadata):
             result_text_metadata.insert(tk.END, f"{key}: {value}\n")
     else:
         messagebox.showwarning("Warning", "Didn't find metadata or not selected a correct file.")
+
+def show_metadata_directory(data, result_text_metadata):
+    if data:
+        for file_data in data:
+            filename = file_data.get("filename", "Unknown file")  # Nombre del archivo
+            metadata = file_data.get("metadata", {})
+
+            # Escribe el nombre del archivo como encabezado
+            result_text_metadata.insert(tk.END, f"File: {os.path.basename(filename)}\n")
+            
+            # Si los metadatos están en formato de diccionario, imprime cada clave-valor
+            if isinstance(metadata, dict):
+                for key, value in metadata.items():
+                    result_text_metadata.insert(tk.END, f"  {key}: {value}\n")
+            else:
+                # Para mensajes de error u otros tipos de contenido no estructurados
+                result_text_metadata.insert(tk.END, f"  {metadata}\n")
+            
+            # Añadir una línea de separación entre archivos
+            result_text_metadata.insert(tk.END, "\n" + "-" * 40 + "\n\n")
+    else:
+        messagebox.showwarning("Warning", "Didn't find metadata or no valid file was selected.")
+
+
