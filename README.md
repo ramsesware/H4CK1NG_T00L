@@ -6,6 +6,8 @@
 
 In this version 2.2, new features have been added, allowing users not only to analyze but also to remove metadata from documents, making it easier to ensure sensitive information isn't left exposed in document files. The modular structure of the tool continues to support scalability and easy maintenance.
 
+--- 
+
 ## Project Structure
 
 The project is organized as follows:
@@ -21,6 +23,8 @@ The project is organized as follows:
   - `file_handler.py`: Manages necessary file operations.
   - `http_requests.py`: Handles HTTP/HTTPS requests for analysis functionalities.
 
+--- 
+
 ## Features
 
 ### 1. Web Directory Analysis
@@ -29,6 +33,16 @@ The project is organized as follows:
 ### 2. Metadata Analysis and Removal
 - **Metadata Analysis**: This functionality extracts metadata from PDF and Word documents, revealing potentially sensitive information such as author names, modification dates, and software details.
 - **Metadata Removal**: In addition to analysis, this version introduces the ability to remove metadata from documents. Users can remove metadata from a single document or from all documents within a specified directory, helping prevent unintentional exposure of sensitive information during document sharing or storage.
+
+### Dependencies:
+- `tkinter`
+- `requests`
+- `PyPDF2`
+- `python-docx`
+- `piexif`
+- `Pillow`
+
+--- 
 
 ## Usage
 
