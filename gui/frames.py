@@ -1,10 +1,11 @@
 import os
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
-from tools.dir_scanner import start_directory_analysis, stop_analysis, clear_results
-from tools.metadata_analyzer import analyze_metadata, analyze_metadata_directory, remove_metadata_file, remove_metadata_directory, clear_results_metadata
-from utils.file_handler import select_file, select_directory
-from gui.dark_theme import apply_dark_theme
+from tools.dir_scanner import *
+from tools.metadata_analyzer import *
+from tools.vulnerability_scanner import *
+from utils.file_handler import *
+from gui.dark_theme import *
 
 frames_tools = {}
 
@@ -32,10 +33,12 @@ def create_main_window(root):
     # Create frames for each tool
     frames_tools["directory_analyzer"] = create_directory_analysis_frame(container)
     frames_tools["metadata_analyzer"] = create_metadata_analysis_frame(container)
+    frames_tools["vulnerability_scanner"] = create_vulnerability_scanner_frame(container)
 
     # Add options to menu
     tools_menu.add_command(label="Web Directory Analyzer", command=lambda: tool_swap("directory_analyzer"))
     tools_menu.add_command(label="Metadata Analyzer", command=lambda: tool_swap("metadata_analyzer"))
+    tools_menu.add_command(label="Vulnerability Scanner", command=lambda: tool_swap("vulnerability_scanner"))
 
     # Show initially Web Directory Analyzer
     tool_swap("directory_analyzer")
@@ -103,6 +106,51 @@ def create_directory_analysis_frame(parent):
 def create_metadata_analysis_frame(parent):
     metadata_frame = ttk.Frame(parent)
 
+    def show_metadata(data, result_text_metadata):
+        if data:
+            result_text_metadata.delete("1.0", tk.END)
+            for key, value in data.items():
+                result_text_metadata.insert(tk.END, f"{key}: {value}\n")
+        else:
+            messagebox.showwarning("Warning", "Didn't find metadata or not selected a correct file.")
+
+    def show_remove_result(data, result_text_metadata):
+        if data:
+            result_text_metadata.delete("1.0", tk.END)
+            result_text_metadata.insert(tk.END, f"{data}\n")  
+        else:
+            messagebox.showwarning("Warning", "Didn't remove metadata or not selected a correct file.")
+
+    def show_remove_directory_result(data, result_text_metadata):
+        if data:
+            result_text_metadata.delete("1.0", tk.END)
+            for message in data:
+                result_text_metadata.insert(tk.END, f"{message}\n")  
+        else:
+            messagebox.showwarning("Warning", "Didn't remove metadata or not selected a correct file.")
+
+    def show_metadata_directory(data, result_text_metadata):
+        if data:
+            for file_data in data:
+                filename = file_data.get("filename", "Unknown file")  # Nombre del archivo
+                metadata = file_data.get("metadata", {})
+
+                # Escribe el nombre del archivo como encabezado
+                result_text_metadata.insert(tk.END, f"File: {os.path.basename(filename)}\n")
+                
+                # Si los metadatos están en formato de diccionario, imprime cada clave-valor
+                if isinstance(metadata, dict):
+                    for key, value in metadata.items():
+                        result_text_metadata.insert(tk.END, f"  {key}: {value}\n")
+                else:
+                    # Para mensajes de error u otros tipos de contenido no estructurados
+                    result_text_metadata.insert(tk.END, f"  {metadata}\n")
+                
+                # Añadir una línea de separación entre archivos
+                result_text_metadata.insert(tk.END, "\n" + "-" * 40 + "\n\n")
+        else:
+            messagebox.showwarning("Warning", "Didn't find metadata or no valid file was selected.")
+
     # Create text area to show results of metadata
     result_metadata_frame = ttk.Frame(metadata_frame)
     result_metadata_frame.grid(row=3, columnspan=2, padx=5, pady=5)
@@ -133,49 +181,31 @@ def create_metadata_analysis_frame(parent):
 
     return metadata_frame
 
-def show_metadata(data, result_text_metadata):
-    if data:
-        result_text_metadata.delete("1.0", tk.END)
-        for key, value in data.items():
-            result_text_metadata.insert(tk.END, f"{key}: {value}\n")
-    else:
-        messagebox.showwarning("Warning", "Didn't find metadata or not selected a correct file.")
 
-def show_remove_result(data, result_text_metadata):
-    if data:
-        result_text_metadata.delete("1.0", tk.END)
-        result_text_metadata.insert(tk.END, f"{data}\n")  
-    else:
-        messagebox.showwarning("Warning", "Didn't remove metadata or not selected a correct file.")
+def create_vulnerability_scanner_frame(parent):
+    vulnerability_frame = ttk.Frame(parent)
 
-def show_remove_directory_result(data, result_text_metadata):
-    if data:
-        result_text_metadata.delete("1.0", tk.END)
-        for message in data:
-            result_text_metadata.insert(tk.END, f"{message}\n")  
-    else:
-        messagebox.showwarning("Warning", "Didn't remove metadata or not selected a correct file.")
+    # Create text area to show results of metadata
+    result_vulnerability_frame = ttk.Frame(vulnerability_frame)
+    result_vulnerability_frame.grid(row=2, columnspan=2, padx=5, pady=5)
+    result_text_vulnerability = tk.Text(result_vulnerability_frame, height=20, width=80, font=("Consolas", 16), bg="#3c3f41", fg="lime", insertbackground="white")
+    result_text_vulnerability.tag_configure("green_text", foreground="lime")
+    scrollbar_vulnerability = ttk.Scrollbar(result_vulnerability_frame, orient="vertical", command=result_text_vulnerability.yview)
+    result_text_vulnerability.configure(yscrollcommand=scrollbar_vulnerability.set)
+    result_text_vulnerability.pack(side="left", fill="both", expand=True)
+    scrollbar_vulnerability.pack(side="right", fill="y")
 
-def show_metadata_directory(data, result_text_metadata):
-    if data:
-        for file_data in data:
-            filename = file_data.get("filename", "Unknown file")  # Nombre del archivo
-            metadata = file_data.get("metadata", {})
+    # Field to insert URL
+    ttk.Label(vulnerability_frame, text="Insert IPv4:", font=("Consolas", 16), foreground="lime", background="#2d2d2d").grid(row=0, column=0, padx=5, pady=5)
+    ipv4_entry = ttk.Entry(vulnerability_frame, width=50, font=("Consolas", 16))
+    ipv4_entry.grid(row=0, column=1, padx=5, pady=5)
 
-            # Escribe el nombre del archivo como encabezado
-            result_text_metadata.insert(tk.END, f"File: {os.path.basename(filename)}\n")
-            
-            # Si los metadatos están en formato de diccionario, imprime cada clave-valor
-            if isinstance(metadata, dict):
-                for key, value in metadata.items():
-                    result_text_metadata.insert(tk.END, f"  {key}: {value}\n")
-            else:
-                # Para mensajes de error u otros tipos de contenido no estructurados
-                result_text_metadata.insert(tk.END, f"  {metadata}\n")
-            
-            # Añadir una línea de separación entre archivos
-            result_text_metadata.insert(tk.END, "\n" + "-" * 40 + "\n\n")
-    else:
-        messagebox.showwarning("Warning", "Didn't find metadata or no valid file was selected.")
+    scan_btn = tk.Button(vulnerability_frame, text="Scan", command=lambda: scan_vulnerability(ipv4_entry.get(), result_text_vulnerability), font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    scan_btn.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+
+    clean_btn = tk.Button(vulnerability_frame, text="Clean", command=lambda: clear_results_vulnerability(result_text_vulnerability), font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    clean_btn.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+
+    return vulnerability_frame
 
 
