@@ -1,19 +1,3 @@
-# Copyright (C) 2024 Moisés Ceñera Fernández
-# This file is part of H4CK1NG_T00L.
-# 
-# H4CK1NG_T00L is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-# 
-# H4CK1NG_T00L is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with H4CK1NG_T00L. If not, see <https://www.gnu.org/licenses/>.
-
 import os
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
@@ -147,6 +131,7 @@ def create_metadata_analysis_frame(parent):
 
     def show_metadata_directory(data, result_text_metadata):
         if data:
+            result_text_metadata.delete("1.0", tk.END)
             for file_data in data:
                 filename = file_data.get("filename", "Unknown file")  # Nombre del archivo
                 metadata = file_data.get("metadata", {})
@@ -180,13 +165,13 @@ def create_metadata_analysis_frame(parent):
     metadata_label = ttk.Label(metadata_frame, text="Metadata:", font=("Consolas", 16), foreground="lime", background="#2d2d2d")
     metadata_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
 
-    select_btn = tk.Button(metadata_frame, text="Select File", command=lambda: show_metadata(analyze_metadata(select_file([("PDF Files", "*.pdf"), ("Word Files", "*.docx"), ("Image Files", "*.jpeg | *.jpg | *.png")])), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    select_btn = tk.Button(metadata_frame, text="Select File", command=lambda: show_metadata(analyze_metadata(select_file([("PDF Files", "*.pdf"), ("Office Files", "*.docx | *.xlsx | *.pptx"), ("Image Files", "*.jpeg | *.jpg | *.png")])), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
     select_btn.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
     select_directory_btn = tk.Button(metadata_frame, text="Select Directory", command=lambda: show_metadata_directory(analyze_metadata_directory(select_directory()), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
     select_directory_btn.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
-    remove_metadata_file_btn = tk.Button(metadata_frame, text="Remove metadata (Single document)", command=lambda: show_remove_result(remove_metadata_file((select_file([("PDF Files", "*.pdf"), ("Word Files", "*.docx"), ("Image Files", "*.jpeg | *.jpg | *.png")]))), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    remove_metadata_file_btn = tk.Button(metadata_frame, text="Remove metadata (Single document)", command=lambda: show_remove_result(remove_metadata_file((select_file([("PDF Files", "*.pdf"), ("Office Files", "*.docx | *.xlsx | *.pptx"), ("Image Files", "*.jpeg | *.jpg | *.png")]))), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
     remove_metadata_file_btn.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
     remove_metadata_directory_btn = tk.Button(metadata_frame, text="Remove metadata (Directory)", command=lambda: show_remove_directory_result(remove_metadata_directory(select_directory()), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
