@@ -32,7 +32,7 @@ The project is organized as follows:
 - Conducts a dictionary-based scan to identify directories in a specified URL, checking their availability through HTTP/HTTPS requests.
 
 ### 2. Metadata Analysis and Removal
-- **Metadata Analysis**: This functionality extracts metadata from PDF and Word documents, revealing potentially sensitive information such as author names, modification dates, and software details.
+- **Metadata Analysis**: This functionality extracts metadata from PDF and Office documents (Word, Excel, PowerPoint), revealing potentially sensitive information such as author names, modification dates, and software details.
 - **Metadata Removal**: In addition to analysis, this version introduces the ability to remove metadata from documents. Users can remove metadata from a single document or from all documents within a specified directory, helping prevent unintentional exposure of sensitive information during document sharing or storage.
   
 ### 3. Vulnerability Port Scanning
