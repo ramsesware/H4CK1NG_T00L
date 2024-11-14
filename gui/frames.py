@@ -201,11 +201,16 @@ def create_vulnerability_scanner_frame(parent):
     ipv4_entry = ttk.Entry(vulnerability_frame, width=50, font=("Consolas", 16))
     ipv4_entry.grid(row=0, column=1, padx=5, pady=5)
 
-    scan_btn = tk.Button(vulnerability_frame, text="Scan", command=lambda: scan_vulnerability(ipv4_entry.get(), result_text_vulnerability), font=("Consolas", 16), bg="#3c3f41", fg="lime")
+
+    progress = ttk.Progressbar(vulnerability_frame, orient="horizontal", length=500, mode="determinate")
+    progress.grid(row=3, columnspan=2, padx=5, pady=5)
+
+    scan_btn = tk.Button(vulnerability_frame, text="Scan", command=lambda: scan_vulnerability(ipv4_entry.get(), result_text_vulnerability, progress), font=("Consolas", 16), bg="#3c3f41", fg="lime")
     scan_btn.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
     clean_btn = tk.Button(vulnerability_frame, text="Clean", command=lambda: clear_results_vulnerability(result_text_vulnerability), font=("Consolas", 16), bg="#3c3f41", fg="lime")
     clean_btn.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+
 
     return vulnerability_frame
 
