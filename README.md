@@ -4,8 +4,6 @@
 
 **H4CK1NG_T00L** is a comprehensive **penetration testing and security analysis** suite designed to offer a scalable and complete solution. This tool is aimed at both beginner and advanced users in the field of cybersecurity, with a focus on an **intuitive graphical interface** that makes common penetration testing tasks easier.
 
-In version 2.3, a vulnerability scanner module has been added, enabling users to scan specified IP addresses for open ports and services. This functionality expands the tool's capabilities by allowing for a more thorough vulnerability assessment. The modular structure of the tool continues to support scalability and easy maintenance.
-
 --- 
 
 ## Project Structure
