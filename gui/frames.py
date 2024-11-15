@@ -188,7 +188,7 @@ def create_vulnerability_scanner_frame(parent):
 
     # Create text area to show results of metadata
     result_vulnerability_frame = ttk.Frame(vulnerability_frame)
-    result_vulnerability_frame.grid(row=2, columnspan=2, padx=5, pady=5)
+    result_vulnerability_frame.grid(row=2, columnspan=3, padx=5, pady=5)
     result_text_vulnerability = tk.Text(result_vulnerability_frame, height=20, width=80, font=("Consolas", 16), bg="#3c3f41", fg="lime", insertbackground="white")
     result_text_vulnerability.tag_configure("green_text", foreground="lime")
     scrollbar_vulnerability = ttk.Scrollbar(result_vulnerability_frame, orient="vertical", command=result_text_vulnerability.yview)
@@ -199,17 +199,21 @@ def create_vulnerability_scanner_frame(parent):
     # Field to insert URL
     ttk.Label(vulnerability_frame, text="Insert IPv4:", font=("Consolas", 16), foreground="lime", background="#2d2d2d").grid(row=0, column=0, padx=5, pady=5)
     ipv4_entry = ttk.Entry(vulnerability_frame, width=50, font=("Consolas", 16))
-    ipv4_entry.grid(row=0, column=1, padx=5, pady=5)
+    ipv4_entry.grid(row=0, column=1, columnspan=2, padx=5, pady=5)
 
 
     progress = ttk.Progressbar(vulnerability_frame, orient="horizontal", length=500, mode="determinate")
-    progress.grid(row=3, columnspan=2, padx=5, pady=5)
+    progress.grid(row=3, columnspan=3, padx=5, pady=5)
 
     scan_btn = tk.Button(vulnerability_frame, text="Scan", command=lambda: scan_vulnerability(ipv4_entry.get(), result_text_vulnerability, progress), font=("Consolas", 16), bg="#3c3f41", fg="lime")
-    scan_btn.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+    scan_btn.grid(row=1, column=0, padx=(5,0), pady=5, sticky="w")
+
+    stop_btn = tk.Button(vulnerability_frame, text="Stop", command=stop_analysis, font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    stop_btn.grid(row=1, column=1, padx=(0,2), pady=5, sticky="w")
 
     clean_btn = tk.Button(vulnerability_frame, text="Clean", command=lambda: clear_results_vulnerability(result_text_vulnerability), font=("Consolas", 16), bg="#3c3f41", fg="lime")
-    clean_btn.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+    clean_btn.grid(row=1, column=2, padx=(2,5), pady=5, sticky="w")
+
 
 
     return vulnerability_frame
