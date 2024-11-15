@@ -4,6 +4,7 @@ from tkinter import ttk, filedialog, messagebox
 from tools.dir_scanner import *
 from tools.metadata_analyzer import *
 from tools.vulnerability_scanner import *
+from tools.subdomain_scanner import *
 from utils.file_handler import *
 from gui.dark_theme import *
 
@@ -34,11 +35,12 @@ def create_main_window(root):
     frames_tools["directory_analyzer"] = create_directory_analysis_frame(container)
     frames_tools["metadata_analyzer"] = create_metadata_analysis_frame(container)
     frames_tools["vulnerability_scanner"] = create_vulnerability_scanner_frame(container)
-
+    frames_tools["subdomain_scanner"] = create_subdomain_scanner_frame(container)
     # Add options to menu
     tools_menu.add_command(label="Web Directory Analyzer", command=lambda: tool_swap("directory_analyzer"))
     tools_menu.add_command(label="Metadata Analyzer", command=lambda: tool_swap("metadata_analyzer"))
     tools_menu.add_command(label="Vulnerability Scanner", command=lambda: tool_swap("vulnerability_scanner"))
+    tools_menu.add_command(label="Subdomain DNS Scanner", command=lambda: tool_swap("subdomain_scanner"))
 
     # Show initially Web Directory Analyzer
     tool_swap("directory_analyzer")
@@ -47,7 +49,6 @@ def tool_swap(tool):
     for frame in frames_tools.values():
         frame.pack_forget()  # Hide all frames
 
-    # Show frame of selected tool
         frames_tools[tool].pack(fill="both", expand=True)
 
 def create_directory_analysis_frame(parent):
@@ -186,7 +187,6 @@ def create_metadata_analysis_frame(parent):
 def create_vulnerability_scanner_frame(parent):
     vulnerability_frame = ttk.Frame(parent)
 
-    # Create text area to show results of metadata
     result_vulnerability_frame = ttk.Frame(vulnerability_frame)
     result_vulnerability_frame.grid(row=2, columnspan=3, padx=5, pady=5)
     result_text_vulnerability = tk.Text(result_vulnerability_frame, height=20, width=80, font=("Consolas", 16), bg="#3c3f41", fg="lime", insertbackground="white")
@@ -196,11 +196,9 @@ def create_vulnerability_scanner_frame(parent):
     result_text_vulnerability.pack(side="left", fill="both", expand=True)
     scrollbar_vulnerability.pack(side="right", fill="y")
 
-    # Field to insert URL
     ttk.Label(vulnerability_frame, text="Insert IPv4:", font=("Consolas", 16), foreground="lime", background="#2d2d2d").grid(row=0, column=0, padx=5, pady=5)
     ipv4_entry = ttk.Entry(vulnerability_frame, width=50, font=("Consolas", 16))
     ipv4_entry.grid(row=0, column=1, columnspan=2, padx=5, pady=5)
-
 
     progress = ttk.Progressbar(vulnerability_frame, orient="horizontal", length=500, mode="determinate")
     progress.grid(row=3, columnspan=3, padx=5, pady=5)
@@ -214,8 +212,33 @@ def create_vulnerability_scanner_frame(parent):
     clean_btn = tk.Button(vulnerability_frame, text="Clean", command=lambda: clear_results_vulnerability(result_text_vulnerability), font=("Consolas", 16), bg="#3c3f41", fg="lime")
     clean_btn.grid(row=1, column=2, padx=(2,5), pady=5, sticky="w")
 
-
-
     return vulnerability_frame
 
 
+def create_subdomain_scanner_frame(parent):
+
+    subdomain_frame = ttk.Frame(parent)
+
+    result_subdomain_frame = ttk.Frame(subdomain_frame)
+    result_subdomain_frame.grid(row=2, columnspan=3, padx=5, pady=5)
+    result_text_subdomain = tk.Text(result_subdomain_frame, height=20, width=80, font=("Consolas", 16), bg="#3c3f41", fg="lime", insertbackground="white")
+    result_text_subdomain.tag_configure("green_text", foreground="lime")
+    scrollbar_subdomain = ttk.Scrollbar(result_subdomain_frame, orient="vertical", command=result_text_subdomain.yview)
+    result_text_subdomain.configure(yscrollcommand=scrollbar_subdomain.set)
+    result_text_subdomain.pack(side="left", fill="both", expand=True)
+    scrollbar_subdomain.pack(side="right", fill="y")
+
+    ttk.Label(subdomain_frame, text="Insert domain:", font=("Consolas", 16), foreground="lime", background="#2d2d2d").grid(row=0, column=0, padx=5, pady=5)
+    domain_entry = ttk.Entry(subdomain_frame, width=50, font=("Consolas", 16))
+    domain_entry.grid(row=0, column=1, columnspan=2, padx=5, pady=5)
+
+    progress = ttk.Progressbar(subdomain_frame, orient="horizontal", length=500, mode="determinate")
+    progress.grid(row=3, columnspan=3, padx=5, pady=5)
+
+    scan_btn = tk.Button(subdomain_frame, text="Scan", command=lambda: start_automatic_subdomain_scan(domain_entry.get(), result_text_subdomain, progress), font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    scan_btn.grid(row=1, column=0, padx=(5,0), pady=5, sticky="w")
+
+    stop_btn = tk.Button(subdomain_frame, text="Stop", command=stop_analysis, font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    stop_btn.grid(row=1, column=1, padx=(0,2), pady=5, sticky="w")
+
+    return subdomain_frame
