@@ -165,13 +165,13 @@ def create_metadata_analysis_frame(parent):
     metadata_label = ttk.Label(metadata_frame, text="Metadata:", font=("Consolas", 16), foreground="lime", background="#2d2d2d")
     metadata_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
 
-    select_btn = tk.Button(metadata_frame, text="Select File", command=lambda: show_metadata(analyze_metadata(select_file([("PDF Files", "*.pdf"), ("Office Files", "*.docx | *.xlsx | *.pptx"), ("Image Files", "*.jpeg | *.jpg | *.png")])), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    select_btn = tk.Button(metadata_frame, text="Select File", command=lambda: show_metadata(analyze_metadata(select_file([("PDF Files", "*.pdf"), ("Office Files", "*.docx | *.xlsx | *.pptx"), ("Image Files", "*.jpeg | *.jpg | *.png"), ("Audio Files", "*.mp3 | *.flac | *.wav | *.ogg"), ("Video Files", "*.mp4 | *.mkv | *.avi | *.mov")])), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
     select_btn.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
     select_directory_btn = tk.Button(metadata_frame, text="Select Directory", command=lambda: show_metadata_directory(analyze_metadata_directory(select_directory()), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
     select_directory_btn.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
-    remove_metadata_file_btn = tk.Button(metadata_frame, text="Remove metadata (Single document)", command=lambda: show_remove_result(remove_metadata_file((select_file([("PDF Files", "*.pdf"), ("Office Files", "*.docx | *.xlsx | *.pptx"), ("Image Files", "*.jpeg | *.jpg | *.png")]))), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
+    remove_metadata_file_btn = tk.Button(metadata_frame, text="Remove metadata (Single document)", command=lambda: show_remove_result(remove_metadata_file((select_file([("PDF Files", "*.pdf"), ("Office Files", "*.docx | *.xlsx | *.pptx"), ("Image Files", "*.jpeg | *.jpg | *.png"), ("Audio Files", "*.mp3 | *.flac | *.wav | *.ogg"), ("Video Files", "*.mp4 | *.mkv | *.avi | *.mov")]))), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")
     remove_metadata_file_btn.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
     remove_metadata_directory_btn = tk.Button(metadata_frame, text="Remove metadata (Directory)", command=lambda: show_remove_directory_result(remove_metadata_directory(select_directory()), result_text_metadata), font=("Consolas", 16), bg="#3c3f41", fg="lime")

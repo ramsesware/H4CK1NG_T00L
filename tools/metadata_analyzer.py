@@ -9,6 +9,11 @@ import piexif
 import tkinter as tk
 import zipfile
 import shutil
+from mutagen import File as MutagenFile
+from hachoir.parser import createParser
+from hachoir.metadata import extractMetadata
+from hachoir.stream import FileOutputStream
+from hachoir.editor import createEditor
 import xml.etree.ElementTree as ET
 
 def analyze_metadata(filepath):
@@ -66,8 +71,7 @@ def analyze_metadata(filepath):
                 "Category": props.category or "N/A",
                 "Comments": props.description or "N/A"
             }
-
-        elif filepath.endswith('.jpg') or filepath.endswith('.jpeg') or filepath.endswith('.png'):
+        elif filepath.endswith(('.jpg', '.jpeg', '.png')):
             image = Image.open(filepath)
             if "exif" in image.info:
                 exif_data = piexif.load(image.info["exif"])
@@ -77,8 +81,47 @@ def analyze_metadata(filepath):
                         tag_name = piexif.TAGS[ifd].get(tag, tag)
                         metadata[tag_name] = value
                 return metadata
+        elif filepath.endswith(('.mp3', '.flac', '.wav', '.ogg')):
+            audio = MutagenFile(filepath)
+            return audio.tags if audio else "No tags found"
+        elif filepath.endswith(('.mp4', '.mkv', '.avi', '.mov')):
+            parser = createParser(filepath)
+            if not parser:
+                return "Unable to parse video file"
+            metadata = extractMetadata(parser)
+            return metadata.exportDictionary() if metadata else "No metadata found"
     except Exception as e:
         messagebox.showerror("Error", f"Error on file analyzing: {e}")
+
+
+def remove_metadata_audio(filepath):
+    audio = MutagenFile(filepath, easy=True)
+    if not audio:
+        return f"No metadata found in {filepath}."
+    
+    audio.delete()
+    audio.save()
+
+
+def remove_metadata_video(filepath):
+
+    parser = createParser(filepath)
+    if not parser:
+        return f"Unable to parse video file {filepath}."
+    
+    editor = createEditor(parser)
+    if not editor:
+        return f"Unable to create editor for {filepath}."
+    
+    for field in list(editor.iterFields()):
+        editor.removeField(field)
+    
+    output_filepath = filepath.replace(".mp4", "_cleaned.mp4")  # Example for .mp4
+    with open(output_filepath, "wb") as output_file:
+        stream = FileOutputStream(output_file)
+        editor.writeInto(stream)
+
+
 
 def remove_metadata_pdf(filepath):
     reader = PdfReader(filepath)
@@ -142,6 +185,13 @@ def remove_metadata_file(filepath):
         elif extension in ['.docx', '.xlsx', '.pptx']:
             remove_metadata_office(filepath)
             return f"File: metadata from {os.path.basename(filepath)} has been removed correctly."
+        elif extension in ['.mp3', '.flac', '.wav', '.ogg']:
+            remove_metadata_audio(filepath)
+            return f"File: metadata from {os.path.basename(filepath)} has been removed correctly."
+        elif extension in ['.mp4', '.mkv', '.avi', '.mov']:
+            remove_metadata_video(filepath)
+            return f"File: metadata from {os.path.basename(filepath)} has been removed correctly."
+        
         else:
             return f"Program doesn't support metadata removing for extension: {extension} of {os.path.basename(filepath)}"
             
