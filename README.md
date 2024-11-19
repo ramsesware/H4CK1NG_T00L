@@ -1,7 +1,7 @@
 # H4CK1NG_T00L v2.4
 
 <div align="center">
-    <img src="ramsesware/images/H4CK1NG_T00L_LOGO.png" />
+    <img src="https://github.com/ramsesware/ramsesware/images/H4CK1NG_T00L_LOGO.png" />
 </div>
 
 ## Description
