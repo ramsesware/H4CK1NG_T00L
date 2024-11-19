@@ -46,6 +46,11 @@ The project is organized as follows:
 - `Pillow`
 - `python-nmap`
 
+```bash
+pip install tkinter requests PyPDF2 python-docx piexif pillow python-nmap
+```
+
+
 --- 
 
 ## Usage
@@ -54,3 +59,4 @@ To run the tool, simply execute `main.py`. The graphical interface will allow yo
 
 ```bash
 python main.py
+
