@@ -71,9 +71,9 @@ The project is organized as follows:
 - `python-nmap`
 - `hachoir`
 - `mutagen`
-
+- `dnspython`
 ```bash
-pip install tkinter requests PyPDF2 python-docx python-nmap hachoir mutagen
+pip install tkinter requests PyPDF2 python-docx python-nmap hachoir mutagen dnspython
 ```
 
 
