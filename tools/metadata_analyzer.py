@@ -5,7 +5,6 @@ from pptx import Presentation
 from tkinter import messagebox
 import os
 from PIL import Image
-import piexif
 import tkinter as tk
 import zipfile
 import shutil
@@ -46,41 +45,48 @@ def analyze_metadata(filepath):
         elif filepath.endswith('.xlsx'):
             workbook = load_workbook(filepath, read_only=True)
             props = workbook.properties
-            if props.creator == "openpyxl":
-                props.creator = None
-                props.created = None
-                props.modified = None
             return {
+                "Identifier": props.identifier or "N/A",
                 "Title": props.title or "N/A",
+                "Subject": props.subject or "N/A",
+                "Description": props.description or "N/A",
                 "Author": props.creator or "N/A",
-                "Last author": props.lastModifiedBy or "N/A",
-                "Date creation at": props.created or "N/A",
-                "Last modified at": props.modified or "N/A",
+                "Last Modified By": props.lastModifiedBy or "N/A",
+                "Creation Date": props.created or "N/A",
+                "Last Modified Date": props.modified or "N/A",
                 "Category": props.category or "N/A",
-                "Comments": props.description or "N/A"
+                "Language": props.language or "N/A",
+                "Content Status": props.contentStatus or "N/A",
+                "Keywords": props.keywords or "N/A",
+                "Revision": props.revision or "N/A",
+                "Last Printed": props.lastPrinted or "N/A",
+                "Version": props.version or "N/A"
             }
         elif filepath.endswith('.pptx'):
             presentation = Presentation(filepath)
             props = presentation.core_properties
             return {
+                "Identifier": props.identifier or "N/A",
                 "Title": props.title or "N/A",
-                "Author": props.creator or "N/A",
-                "Last author": props.lastModifiedBy or "N/A",
-                "Date creation at": props.created or "N/A",
-                "Last modified at": props.modified or "N/A",
+                "Subject": props.subject or "N/A",
+                "Author": props.author or "N/A",
+                "Last Modified By": props.last_modified_by or "N/A",
+                "Creation Date": props.created or "N/A",
+                "Last Modified": props.modified or "N/A",
                 "Category": props.category or "N/A",
-                "Comments": props.description or "N/A"
+                "Language": props.language or "N/A",
+                "Content Status": props.content_status or "N/A",
+                "Content Type": props.content_type or "N/A",
+                "Keywords": props.keywords or "N/A",
+                "Revision": props.revision or "N/A",
+                "Last Printed": props.last_printed or "N/A",
+                "Comments": props.comments or "N/A",
+                "Version": props.version or "N/A"
             }
         elif filepath.endswith(('.jpg', '.jpeg', '.png')):
             image = Image.open(filepath)
-            if "exif" in image.info:
-                exif_data = piexif.load(image.info["exif"])
-                metadata = {}
-                for ifd in exif_data:
-                    for tag, value in exif_data[ifd].items():
-                        tag_name = piexif.TAGS[ifd].get(tag, tag)
-                        metadata[tag_name] = value
-                return metadata
+            metadata = image.info
+            return metadata
         elif filepath.endswith(('.mp3', '.flac', '.wav', '.ogg')):
             audio = MutagenFile(filepath)
             return audio.tags if audio else "No tags found"

@@ -69,9 +69,11 @@ The project is organized as follows:
 - `piexif`
 - `Pillow`
 - `python-nmap`
+- `hachoir`
+- `mutagen`
 
 ```bash
-pip install tkinter requests PyPDF2 python-docx piexif pillow python-nmap
+pip install tkinter requests PyPDF2 python-docx python-nmap hachoir mutagen
 ```
 
 
